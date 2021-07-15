@@ -2,11 +2,10 @@ import express = require('express');
 import { Request, Response } from 'express';
 import adService from '../service/ad.service';
 import { isAuth } from './../auth/auth';
-import token from './../config/auth.config';
 
 export const router = express.Router();
 
-router.use((req, res, next) => isAuth(req, res, next, token.audAds));
+router.use(isAuth);
 
 router.get('/', (req: Request, res: Response) => {
   const result = adService.all(req.query);
