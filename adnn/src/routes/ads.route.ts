@@ -1,14 +1,14 @@
 import express = require('express');
 import { Request, Response } from 'express';
 import adService from '../service/ad.service';
-import { isAuth } from './../auth/auth';
+import { isAuth } from '../auth/auth';
 
 export const router = express.Router();
 
 router.use(isAuth);
 
-router.get('/', (req: Request, res: Response) => {
-  const result = adService.all(req.query);
+router.get('/', (_: Request, res: Response) => {
+  const result = adService.all();
 
   if (result) res.send(result);
   else res.status(400).send(`didn't find data to send from ad/s`);

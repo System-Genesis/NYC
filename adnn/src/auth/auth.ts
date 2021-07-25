@@ -2,17 +2,13 @@ import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import path from 'path';
 import { NextFunction, Request, Response } from 'express';
-import myAud from './../config/auth.config';
+import myAud from '../config/env.config';
 
 const errorRes = (res: Response) => res.status(401).send('Unauthorized');
 
 type payloadType = { aud: string };
 
-export const isAuth = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const isAuth = async (req: Request, res: Response, next: NextFunction) => {
   if (process.env.ENV === 'mock') return next();
 
   const token = req.header('Authorization');
@@ -21,10 +17,7 @@ export const isAuth = async (
   try {
     if (!token) return errorRes(res);
 
-    const payload: payloadType = jwt.verify(
-      token,
-      key.toString()
-    ) as payloadType;
+    const payload: payloadType = jwt.verify(token, key.toString()) as payloadType;
 
     if (!payload || payload.aud !== myAud) return errorRes(res);
 

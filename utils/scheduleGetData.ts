@@ -1,6 +1,6 @@
 import schedule from 'node-schedule';
-import config from '../config/env.config';
-import { logInfo } from '../log/logger';
+import config from '../sf/src/config/env.config';
+import { logInfo } from '../sf/src/log/logger';
 
 const { hour: defHour, minute: defMinute } = config.schedule;
 
