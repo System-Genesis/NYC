@@ -1,20 +1,19 @@
-FROM node:13.12-alpine
-
+FROM node:13.12-alpine AS builder
 WORKDIR /
-
 COPY package*.json ./
-
-RUN npm install
-
+RUN npm install --silent
 COPY . .
-
 RUN npm run build
 
-ENV PORT=7700
-ENV AUTH=123
+FROM node:13.12-alpine 
+WORKDIR /
+COPY --from=builder /dist ./dist
+COPY --from=builder /key.pem .
+COPY package*.json ./
+RUN npm install --production --silent
 
 WORKDIR /dist
 
-EXPOSE 7700
+EXPOSE 7701
 
 CMD node server.js
