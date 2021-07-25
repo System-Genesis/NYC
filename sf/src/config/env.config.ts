@@ -4,10 +4,6 @@ import env from 'env-var';
 
 export default {
   token: env.get('TOKEN').required().asString(),
-  schedule: {
-    hour: env.get('HOUR').required().asInt(),
-    minute: env.get('MINUTE').required().asInt(),
-  },
   rabbit: {
     uri: env.get('RABBIT_URI').required().asString(),
     logger: env.get('LOGGER').required().asString(),

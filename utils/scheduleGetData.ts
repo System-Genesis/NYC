@@ -1,8 +1,7 @@
 import schedule from 'node-schedule';
-import config from '../sf/src/config/env.config';
 import { logInfo } from '../sf/src/log/logger';
 
-const { hour: defHour, minute: defMinute } = config.schedule;
+const { HOUR: defHour, MINUTE: defMinute } = process.env;
 
 export class DbHandler {
   hour: number;
@@ -14,8 +13,8 @@ export class DbHandler {
   constructor(
     updateData: Function,
     getData: Function,
-    hour: number = defHour,
-    minute: number = defMinute
+    hour: number = parseInt(defHour as string),
+    minute: number = parseInt(defMinute as string)
   ) {
     this.hour = hour;
     this.minute = minute;
