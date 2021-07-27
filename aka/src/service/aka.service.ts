@@ -1,20 +1,7 @@
-import getDataService from '../DataAccess/dataFromLocalJson';
-import utils from '../utils/utils';
+import repoAka from '../mongo/repo.aka';
 
 export default {
-  all: (query: object) => {
-    let data = getDataService.aka();
-    if (query) data = utils.filterData(data, query);
-    return data;
-  },
-
-  byPersonalNumber: (personalNumber: string) => {
-    const data = getDataService.aka();
-    return utils.findInData(data, { mi: personalNumber });
-  },
-
-  byIdentityCard: (identityCard: string) => {
-    const data = getDataService.aka();
-    return utils.findInData(data, { tz: identityCard });
-  },
+  all: async (query: object) => await repoAka.get.all(query),
+  byPersonalNumber: async (personalNumber: string) => await repoAka.get.oneByPn(personalNumber),
+  byIdentityCard: async (identityCard: string) => await repoAka.get.oneByIc(identityCard),
 };

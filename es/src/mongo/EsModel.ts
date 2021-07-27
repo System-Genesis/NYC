@@ -37,6 +37,6 @@ const EsSchema = new mongoose.Schema(
     { versionKey: false },
 );
 
-const mergedObjModel = mongoose.model(mongo.collectionName, EsSchema);
+const ESModel = mongoose.model(mongo.collectionName, EsSchema);
 
-export default mergedObjModel;
+export default ESModel;

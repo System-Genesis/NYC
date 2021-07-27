@@ -1,18 +1,7 @@
-import getDataService from '../DataAccess/dataFromLocalJson';
-import utils from '../utils/utils';
+import repoSf from '../mongo/repo.sf';
 
 export default {
-  all: (query: object) => {
-    let data = getDataService.sf();
-    if (query) data = utils.filterData(data, query);
-    return data;
-  },
-  byPersonalNumber: (personalNumber: string) => {
-    const data = getDataService.sf();
-    return utils.findInData(data, { personalNumber });
-  },
-  byIdentityCard: (identityCard: string) => {
-    const data = getDataService.sf();
-    return utils.findInData(data, { tz: identityCard });
-  },
+  all: async (query: object) => await repoSf.get.all(query),
+  byPersonalNumber: async (personalNumber: string) => await repoSf.get.oneByPn(personalNumber),
+  byIdentityCard: async (identityCard: string) => await repoSf.get.oneByIc(identityCard),
 };
