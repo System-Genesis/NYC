@@ -1,6 +1,6 @@
 import app from './express';
 import initializeSchedule from './DataAccess/initializeSchedule';
-import { connectRabbit } from './rabbit/rabbit';
+import { connectRabbit } from '../../rabbit/rabbit';
 import initializeMongo from './mongo/mongo';
 
 require('dotenv').config();
