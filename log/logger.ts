@@ -1,87 +1,46 @@
 import { menash } from 'menashmq';
-import path from 'path';
-import winston from 'winston';
-import configEnv from '../aka/src/config/env.config';
+import winston, { config, format } from 'winston';
 
-const { config, format } = winston;
+const { LOG_QUEUE } = process.env;
 
-const date = () => new Date(Date.now()).toLocaleDateString().replace(/\//g, '_');
-
-export const logger = winston.createLogger({
+const logger = winston.createLogger({
   levels: config.npm.levels,
 
-  format: format.combine(
-    format.colorize(),
-    format.timestamp({
-      format: 'YYYY-MM-DD HH:mm:ss',
-    }),
-    format.splat(),
-    format.simple(),
-    format.json()
-  ),
-  transports: [
-    new winston.transports.File({
-      filename: path.join(__dirname, `../../log/${date()}-logger.log`),
-      maxsize: 50000,
-    }),
-  ],
+  format: format.combine(format.colorize(), format.splat(), format.simple()),
+  transports: [new winston.transports.Console()],
 });
 
-/**
- * Send log in level INFO to logger queue and to local logger
- * @param msg - explanation of logger
- * @param any - objet to add to msg
- */
-export const logInfo = (msg: string, any: any = '') => {
-  menash.send(configEnv.rabbit.logger, {
+export const logInfo = (msg: string, servie: string, any?: any) => {
+  menash.send(LOG_QUEUE!, {
     level: 'info',
     message: `${msg}. ${any ? JSON.stringify(any) : ''}`,
     system: 'NYC',
-    service: 'sf',
+    service: servie,
     extraFields: any,
   });
-
-  console.log(`${msg} ${!any ? '' : JSON.stringify(any)}`);
 
   if (any) logger.info(`${msg} ${JSON.stringify(any)}`);
   else logger.info(msg);
 };
 
-/**
- * Send log in level warn to logger queue and to local logger
- * @param msg - explanation of logger
- * @param any - objet to add to msg
- */
-export const logWarn = (msg: string, any: any = '') => {
-  menash.send(configEnv.rabbit.logger, {
-    level: 'warn',
+export const logWarn = (msg: string, servie: string, any?: any) => {
+  menash.send(LOG_QUEUE!, {
+    level: 'warning',
     message: `${msg}. ${any ? JSON.stringify(any) : ''}`,
     system: 'NYC',
-    service: 'sf',
+    service: servie,
     extraFields: any,
   });
-
-  console.log(`${msg} ${!any ? '' : JSON.stringify(any)}`);
-
-  if (any) logger.info(`${msg} ${JSON.stringify(any)}`);
-  else logger.info(msg);
+  logger.warn(`${msg} ${!any ? '' : JSON.stringify(any)}`);
 };
 
-/**
- * Send log in level ERROR to logger queue and to local logger
- * @param msg - explanation of logger
- * @param any - objet to add to msg
- */
-export const logError = (msg: string, any: any = '') => {
-  menash.send(configEnv.rabbit.logger, {
+export const logError = (msg: string, servie: string, any?: any) => {
+  menash.send(LOG_QUEUE!, {
     level: 'error',
     message: `${msg}. ${any ? JSON.stringify(any) : ''}`,
-    system: 'NYC',
-    service: 'sf',
+    system: 'traking',
+    service: servie,
     extraFields: any,
   });
-
-  console.log(`Error ${msg} ${!any ? '' : JSON.stringify(any)}`);
-
   logger.error(`${msg} ${!any ? '' : JSON.stringify(any)}`);
 };
