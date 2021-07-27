@@ -1,4 +1,4 @@
-import { logInfo } from './../log/logger';
+import { logInfo } from '../../../log/logger';
 import * as mongoose from 'mongoose';
 import config from '../config/env.config';
 

@@ -1,6 +1,6 @@
 import { promisify } from 'util';
 import envConfig from '../config/env.config';
-import { logError } from '../log/logger';
+import { logError } from '../../../log/logger';
 import minioClient from './minio';
 
 const bucketName = envConfig.minio.bucketName;

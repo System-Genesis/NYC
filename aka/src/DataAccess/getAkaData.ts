@@ -1,4 +1,4 @@
-import { logError } from '../log/logger';
+import { logError } from '../../../log/logger';
 import fs from 'fs';
 import axios from 'axios';
 import path from 'path';
