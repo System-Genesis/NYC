@@ -8,7 +8,5 @@ coverage/
 # Package lock
 package-lock.json
 
-log/
-.log
 
 getToken.js
