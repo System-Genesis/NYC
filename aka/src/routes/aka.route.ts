@@ -2,11 +2,35 @@ import express = require('express');
 import { Request, Response } from 'express';
 import akaService from '../service/aka.service';
 import { isAuth } from './../auth/auth';
-import token from './../config/auth.config';
+import config from '../config/env.config';
+import { getAkaData, imgHandler, saveToDB } from '../DataAccess/getAkaData';
+import { logError } from '../log/logger';
 
 export const router = express.Router();
 
-router.use((req, res, next) => isAuth(req, res, next, token.audAka));
+router.post('/files', async (req: Request, res: Response) => {
+  const { fileName } = req.body.metaData;
+  res.send('Got fileName: ' + fileName);
+  if (fileName.startWith(config.tFile)) {
+    try {
+      await imgHandler(fileName);
+    } catch (error) {
+      logError('Error handle Image Data', { error, fileName });
+    }
+  } else {
+    try {
+      const data = await getAkaData(fileName);
+
+      await saveToDB(fileName.startWith('c') ? 's' : 'i', data);
+    } catch (error) {
+      logError('Error handle AKA Data', { error, fileName });
+    }
+  }
+
+  return;
+});
+
+router.use(isAuth);
 
 router.get('/', (req: Request, res: Response) => {
   const result = akaService.all(req.query);

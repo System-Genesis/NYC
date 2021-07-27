@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json());
 app.use(morgan('dev'));
 
-app.use('/api', router);
+app.use('/api/aka', router);
 
 app.use('/isAlive', (_req, res) => {
   res.status(200).send('alive');
