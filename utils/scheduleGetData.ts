@@ -1,5 +1,5 @@
 import schedule from 'node-schedule';
-import { logInfo } from '../sf/src/log/logger';
+import { logInfo } from '../log/logger';
 
 const { HOUR: defHour, MINUTE: defMinute } = process.env;
 

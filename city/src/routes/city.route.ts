@@ -2,11 +2,10 @@ import express = require('express');
 import { Request, Response } from 'express';
 import cityService from '../service/city.service';
 import { isAuth } from './../auth/auth';
-import token from './../config/auth.config';
 
 export const router = express.Router();
 
-router.use((req, res, next) => isAuth(req, res, next, token.audCity));
+router.use(isAuth);
 
 router.get('/', (req: Request, res: Response) => {
   const result = cityService.all(req.query);
