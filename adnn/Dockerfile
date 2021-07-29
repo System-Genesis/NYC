@@ -14,6 +14,6 @@ RUN npm install --production --silent
 
 WORKDIR /dist
 
-EXPOSE 7705
+EXPOSE 7702
 
 CMD node server.js
