@@ -8,7 +8,7 @@ require('dotenv').config();
 const PORT = process.env.PORT || 7700;
 
 const start = async () => {
-  await connectRabbit();
+  await connectRabbit('sf');
 
   await initializeMongo();
   await initializeSchedule();
