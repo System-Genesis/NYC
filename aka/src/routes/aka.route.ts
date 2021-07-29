@@ -10,12 +10,14 @@ export const router = express.Router();
 
 router.post('/files', async (req: Request, res: Response) => {
   const { fileName } = req.body.metaData;
+
   res.send('Got fileName: ' + fileName);
-  if (fileName.startWith(config.tFile)) {
+
+  if (fileName.startWith(config.imgFile)) {
     try {
       await imgHandler(fileName);
     } catch (error) {
-      logError('Error handle Image Data', { error, fileName });
+      logError('aka', 'Error handle Image Data', { error, fileName });
     }
   } else {
     try {
@@ -23,7 +25,7 @@ router.post('/files', async (req: Request, res: Response) => {
 
       await saveToDB(fileName.startWith('c') ? 's' : 'i', data);
     } catch (error) {
-      logError('Error handle AKA Data', { error, fileName });
+      logError('aka', 'Error handle AKA Data', { error, fileName });
     }
   }
 

@@ -35,7 +35,7 @@ const saveDataToFile = async (fileName: string, token: string) => {
       myStream.on('error', reject);
     });
   } catch (error) {
-    throw logError('Error to get AKA DATA', error);
+    throw logError('aka', 'Error to get AKA DATA', error);
   }
 };
 
@@ -51,7 +51,7 @@ const convertXlToJson = async (fileName: string) => {
 
     return akaData;
   } catch (error) {
-    throw logError('Error to convert AKA DATA', error);
+    throw logError('aka', 'Error to convert AKA DATA', error);
   }
 };
 
@@ -84,7 +84,7 @@ export const imgHandler = async (fileName: string) => {
     const dateTaken = new Date(img.T_TZILUM);
     const pn = img.MISPAR_ISHI;
 
-    const tmunaBuffer: Buffer = new Buffer(img.TMUNA.data);
+    const tmunaBuffer: Buffer = Buffer.from(img.TMUNA.data);
 
     const imgFromDb: picture = await repoAka.get.oneByPn(pn);
     const takenImgDate = dateTaken.toISOString().split('T')[0];
@@ -99,13 +99,13 @@ export const imgHandler = async (fileName: string) => {
           inconsistentPath
         ) {
           const newPath = await uploadJpgFromBuffer(imgName, tmunaBuffer);
-          await repoAka.update.i.gatByPn(pn, {
+          await repoAka.update.i.byPn(pn, {
             takenAt: dateTaken,
             path: newPath,
           });
         }
       } catch (error) {
-        logError('ERROR Update Image', { pn, path });
+        logError('aka', 'ERROR Update Image', { pn, path });
       }
     } else {
       const newPath = await uploadJpgFromBuffer(imgName, tmunaBuffer);

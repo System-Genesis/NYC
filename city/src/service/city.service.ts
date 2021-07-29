@@ -1,22 +1,13 @@
-import getSourceData from '../DataAccess/dataFromLocalJson';
+import getSourceData from '../DataAccess/dataFromAPI';
+import repoCity from '../mongo/repo.city';
 import utils from '../utils/utils';
 
 export default {
-  all: (query: object) => {
-    let data = getSourceData();
-    if (query) data = utils.filterData(data, query);
-    return data;
-  },
-  byPersonalNumber: (personalNumber: string) => {
-    const data = getSourceData();
-    return utils.findInData(data, { personalNumber });
-  },
-  byDomainUser: (domainUser: string) => {
-    const data = getSourceData();
+  all: async (query: object) => await repoCity.get.all(query),
+  byPersonalNumber: async (personalNumber: string) => await repoCity.get.oneByPn(personalNumber),
+  byIdentityCard: async (identityCard: string) => await repoCity.get.oneByIc(identityCard),
+  byDomainUser: async (domainUser: string) => {
+    const data: any[] = await getSourceData();
     return utils.findInData(data, { domUser: domainUser });
-  },
-  byIdentityCard: (identityCard: string) => {
-    const data = getSourceData();
-    return utils.findInData(data, { tz: identityCard });
   },
 };

@@ -1,7 +1,6 @@
 import { menash } from 'menashmq';
 import winston, { config, format } from 'winston';
-
-const { LOG_QUEUE } = process.env;
+import mainConfig from '../main.config/main.config';
 
 const logger = winston.createLogger({
   levels: config.npm.levels,
@@ -10,37 +9,47 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 });
 
-export const logInfo = (msg: string, servie: string, any?: any) => {
-  menash.send(LOG_QUEUE!, {
-    level: 'info',
-    message: `${msg}. ${any ? JSON.stringify(any) : ''}`,
+const log = (level: string, service: string, msg: string, any: any = '') => {
+  menash.send(mainConfig.rabbit.logger, {
+    level: level,
+    title: `${msg}. ${any ? JSON.stringify(any) : ''}`,
     system: 'NYC',
-    service: servie,
+    service: service,
     extraFields: any,
   });
 
-  if (any) logger.info(`${msg} ${JSON.stringify(any)}`);
-  else logger.info(msg);
+  console.log(`${msg} ${!any ? '' : JSON.stringify(any)}`);
+
+  if (any) logger[level](`${msg} ${JSON.stringify(any)}`);
+  else logger[level](msg);
 };
 
-export const logWarn = (msg: string, servie: string, any?: any) => {
-  menash.send(LOG_QUEUE!, {
-    level: 'warning',
-    message: `${msg}. ${any ? JSON.stringify(any) : ''}`,
-    system: 'NYC',
-    service: servie,
-    extraFields: any,
-  });
-  logger.warn(`${msg} ${!any ? '' : JSON.stringify(any)}`);
+/**
+ * Send log in level INFO to logger queue and to local logger
+ * @param level - Log level
+ * @param msg - explanation of logger
+ * @param any - objet to add to msg
+ */
+export const logInfo = (service: string, msg: string, any: any = '') => {
+  log('info', service, msg, any);
 };
 
-export const logError = (msg: string, servie: string, any?: any) => {
-  menash.send(LOG_QUEUE!, {
-    level: 'error',
-    message: `${msg}. ${any ? JSON.stringify(any) : ''}`,
-    system: 'traking',
-    service: servie,
-    extraFields: any,
-  });
-  logger.error(`${msg} ${!any ? '' : JSON.stringify(any)}`);
+/**
+ * Send log in level warn to logger queue and to local logger
+ * @param level - Log level
+ * @param msg - explanation of logger
+ * @param any - objet to add to msg
+ */
+export const logWarn = (service: string, msg: string, any: any = '') => {
+  log('warn', service, msg, any);
+};
+
+/**
+ * Send log in level ERROR to logger queue and to local logger
+ * @param level - Log level
+ * @param msg - explanation of logger
+ * @param any - objet to add to msg
+ */
+export const logError = (service: string, msg: string, any: any = '') => {
+  log('error', service, msg, any);
 };

@@ -4,7 +4,7 @@ import env from 'env-var';
 
 export default {
   // audAka: 'lsluqvF8YMp0ffDPWhDyoYG8xqU9J8',
-  tFile: env.get('TFILE').required().asString(),
+  imgFile: env.get('TFILE').required().asString(),
   token: env.get('TOKEN').required().asString(),
   akaUrl: env.get('AKA_URL').required().asString(),
   rabbit: {

@@ -1,13 +1,15 @@
 import menash from 'menashmq';
-import config from '../aka/src/config/env.config';
+import config from '../main.config/main.config';
 import { logInfo } from '../log/logger';
 
-export const connectRabbit = async () => {
-  await menash.connect(config.rabbit.uri, config.rabbit.retryOptions);
+const { uri, retryOptions, logger } = config.rabbit;
 
-  await menash.declareQueue(config.rabbit.logger);
+export const connectRabbit = async (service: string) => {
+  await menash.connect(uri, retryOptions);
 
-  logInfo('Rabbit connected');
+  await menash.declareQueue(logger);
+
+  logInfo(service, 'Rabbit connected');
 };
 
 export default { connectRabbit };

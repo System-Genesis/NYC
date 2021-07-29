@@ -2,11 +2,11 @@ import express = require('express');
 import { Request, Response } from 'express';
 import cityService from '../service/city.service';
 import { isAuth } from './../auth/auth';
-import token from './../config/auth.config';
+import { schedule } from '../DataAccess/initializeSchedule';
 
 export const router = express.Router();
 
-router.use((req, res, next) => isAuth(req, res, next, token.audCity));
+router.use(isAuth);
 
 router.get('/', (req: Request, res: Response) => {
   const result = cityService.all(req.query);
@@ -52,6 +52,11 @@ router.get('/domainUser/:domainUser', (req: Request, res: Response) => {
     const msg = `person with domainUser: ${domainUser} isn't exists in city`;
     res.status(400).send(msg);
   }
+});
+
+router.post('/', async (req: Request, res: Response) => {
+  schedule.changeRunTime(parseInt(req.params.hour), parseInt(req.params.minutes));
+  res.send('Schedule time changed');
 });
 
 export default router;

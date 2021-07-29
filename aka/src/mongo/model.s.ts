@@ -18,17 +18,11 @@ const akaSSchema = new mongoose.Schema(
     [akaFieldNames.identityCard]: String,
     [akaFieldNames.personalNumber]: String,
     [akaFieldNames.rank]: String,
-    [akaFieldNames.phone]: String,
-    [akaFieldNames.areaCode]: String,
-    [akaFieldNames.mobilePhone]: String,
-    [akaFieldNames.areaCodeMobile]: String,
     [akaFieldNames.dischargeDay]: String,
     [akaFieldNames.clearance]: String,
     [akaFieldNames.unitName]: String,
-    [akaFieldNames.telephoneType]: String,
     [akaFieldNames.birthDate]: String,
     [akaFieldNames.sex]: String,
-    [akaFieldNames.picture]: String,
   },
   { versionKey: false }
 );
