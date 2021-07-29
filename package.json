@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/System-Genesis/NYC#readme",
   "dependencies": {
-    "node-schedule": "^2.0.0"
+    "menashmq": "^0.1.5",
+    "node-schedule": "^2.0.0",
+    "winston": "^3.3.3"
   }
 }

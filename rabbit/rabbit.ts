@@ -1,5 +1,5 @@
 import menash from 'menashmq';
-import config from '../config/env.config';
+import config from '../aka/src/config/env.config';
 import { logInfo } from '../log/logger';
 
 export const connectRabbit = async () => {

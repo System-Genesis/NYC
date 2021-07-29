@@ -1,5 +1,5 @@
 import schedule from 'node-schedule';
-import { logInfo } from '../sf/src/log/logger';
+import { logInfo } from '../log/logger';
 
 const { HOUR: defHour, MINUTE: defMinute } = process.env;
 
@@ -9,28 +9,37 @@ export class DbHandler {
   runFunc: schedule.Job;
   updateData: Function;
   getData: Function;
+  source: string;
 
   constructor(
     updateData: Function,
     getData: Function,
+    source: string,
     hour: number = parseInt(defHour as string),
-    minute: number = parseInt(defMinute as string)
+    minute: number = parseInt(defMinute as string),
   ) {
     this.hour = hour;
     this.minute = minute;
     this.updateData = updateData;
     this.getData = getData;
+    this.source = source;
+    this.start(true);
   }
 
-  public async start() {
-    logInfo(`Get data for sf run scheduled to ${this.hour}:${this.minute}`);
-    this.runFunc = schedule.scheduleJob({ hour: this.hour, minute: this.minute }, async () => {
-      logInfo('Get SF DATA is starting');
+  private async getAndUpdateDB() {
+      logInfo(`Get ${this.source} DATA is starting`, this.source);
       const data = await this.getData();
       this.updateData(data);
       // TODO specific log
-      logInfo('SF DATA is updated');
-    });
+      logInfo(`${this.source} DATA is updated`,  this.source);
+  }
+
+  public async start(now?: boolean) {
+    if (now) { 
+      this.getAndUpdateDB();
+    }
+    logInfo(`Get data for ${this.source} run scheduled to ${this.hour}:${this.minute}`, this.source);
+    this.runFunc = schedule.scheduleJob({ hour: this.hour, minute: this.minute }, this.getAndUpdateDB);
   }
 
   public changeRunTime(hour: number, minute: number) {
