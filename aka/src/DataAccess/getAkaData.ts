@@ -86,7 +86,7 @@ export const imgHandler = async (fileName: string) => {
 
     const tmunaBuffer: Buffer = Buffer.from(img.TMUNA.data);
 
-    const imgFromDb: picture = await repoAka.get.oneByPn(pn);
+    const imgFromDb: picture = await repoAka.get.imgByPn(pn);
     const takenImgDate = dateTaken.toISOString().split('T')[0];
     const imgName = config.minio.bucketName + '_' + pn + '_' + takenImgDate;
 

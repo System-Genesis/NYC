@@ -11,7 +11,7 @@ type aka = {
   birthday: string;
   sex: 'm' | 'f';
   phone?: phone;
-  metaData?: picture;
+  picture?: picture;
 };
 
 export type phone = {
@@ -26,7 +26,6 @@ export type phone = {
 };
 
 export type picture = {
-  _id?: string;
   personalNumber: string;
   path: string;
   format: string;

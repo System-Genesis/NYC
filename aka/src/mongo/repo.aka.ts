@@ -16,27 +16,27 @@ const akaTModel = mongoose.model(mongo.collectionName, akaTSchema);
 
 const get = {
   all: async (query = {}) => {
-    const resS: aka[] = await akaSModel.find(query);
-    const resI: picture[] = await akaIModel.find(query);
-    const resT: phone[] = await akaTModel.find(query);
+    const resS: aka[] = (await akaSModel.find(query).lean()) as aka[];
+    const resI: picture[] = (await akaIModel.find(query).lean()) as picture[];
+    const resT: phone[] = (await akaTModel.find(query).lean()) as phone[];
 
-    const sortedS = resS.sort((c: any, n: any) => (c.personalNumber > n.personalNumber ? -1 : 1));
-    const sortedI = resI.sort((c: any, n: any) => (c.personalNumber > n.personalNumber ? -1 : 1));
+    const sortedS = resS.sort((c, n) => (c.mi > n.mi ? -1 : 1));
+    const sortedI = resI.sort((c, n) => (c.personalNumber > n.personalNumber ? -1 : 1));
     const sortedT = resT.sort((c: phone, n: phone) => (c.MISPAR_ISHI! > n.MISPAR_ISHI! ? -1 : 1));
 
     const allData = sortedS.map((s) => {
       const pn = s[akaFieldNames.personalNumber];
       s.phone = sortedT.find((t) => t.MISPAR_ISHI === pn);
-      s.metaData = sortedI.find((t) => t.personalNumber === pn);
+      s.picture = sortedI.find((t) => t.personalNumber === pn);
       return s;
     });
 
     return allData;
   },
-  oneByPn: async (personalNumber: string) => {
-    const person = await akaSModel.find({ personalNumber });
-    const telephone = await akaTModel.find({ personalNumber });
-    const meta = await akaIModel.find({ personalNumber });
+  oneByPn: async (mi: string) => {
+    const person: aka = await akaSModel.find({ personalNumber: mi }).lean();
+    const meta: picture = await akaIModel.find({ personalNumber: mi }).lean();
+    const telephone: phone = await akaTModel.find({ personalNumber: mi }).lean();
 
     person['picture'] = meta;
     person['phone'] = telephone;
@@ -44,16 +44,19 @@ const get = {
     return person;
   },
   oneByIc: async (identityCard: string) => {
-    const person = await akaSModel.find({ identityCard });
-    if (person.personalNumber) {
-      const telephone = await akaTModel.find({ MISPAR_ISHI: person.personalNumber });
-      const meta = await akaIModel.find({ personalNumber: person.personalNumber });
+    const person: aka = await akaSModel.find({ identityCard }).lean();
+    if (person.mi) {
+      const telephone: phone = await akaTModel.find({ MISPAR_ISHI: person.mi }).lean();
+      const meta: picture = await akaIModel.find({ personalNumber: person.mi }).lean();
 
-      person['picture'] = meta;
-      person['phone'] = telephone;
+      person.picture = meta;
+      person.phone = telephone;
     }
 
     return person;
+  },
+  imgByPn: async (personalNumber: string) => {
+    return (await akaIModel.find({ personalNumber }).lean()) as picture;
   },
 };
 
