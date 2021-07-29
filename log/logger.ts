@@ -27,61 +27,47 @@ export const logger = winston.createLogger({
   ],
 });
 
-/**
- * Send log in level INFO to logger queue and to local logger
- * @param msg - explanation of logger
- * @param any - objet to add to msg
- */
-export const logInfo = (msg: string, any: any = '') => {
+const log = (level: string, service: string, msg: string, any: any = '') => {
   menash.send(configEnv.rabbit.logger, {
-    level: 'info',
-    message: `${msg}. ${any ? JSON.stringify(any) : ''}`,
+    level: level,
+    title: `${msg}. ${any ? JSON.stringify(any) : ''}`,
     system: 'NYC',
-    service: 'sf',
+    service: service,
     extraFields: any,
   });
 
   console.log(`${msg} ${!any ? '' : JSON.stringify(any)}`);
 
-  if (any) logger.info(`${msg} ${JSON.stringify(any)}`);
-  else logger.info(msg);
+  if (any) logger[level](`${msg} ${JSON.stringify(any)}`);
+  else logger[level](msg);
+};
+
+/**
+ * Send log in level INFO to logger queue and to local logger
+ * @param level - Log level
+ * @param msg - explanation of logger
+ * @param any - objet to add to msg
+ */
+export const logInfo = (service: string, msg: string, any: any = '') => {
+  log('info', service, msg, any);
 };
 
 /**
  * Send log in level warn to logger queue and to local logger
+ * @param level - Log level
  * @param msg - explanation of logger
  * @param any - objet to add to msg
  */
-export const logWarn = (msg: string, any: any = '') => {
-  menash.send(configEnv.rabbit.logger, {
-    level: 'warn',
-    message: `${msg}. ${any ? JSON.stringify(any) : ''}`,
-    system: 'NYC',
-    service: 'sf',
-    extraFields: any,
-  });
-
-  console.log(`${msg} ${!any ? '' : JSON.stringify(any)}`);
-
-  if (any) logger.info(`${msg} ${JSON.stringify(any)}`);
-  else logger.info(msg);
+export const logWarn = (service: string, msg: string, any: any = '') => {
+  log('warn', service, msg, any);
 };
 
 /**
  * Send log in level ERROR to logger queue and to local logger
+ * @param level - Log level
  * @param msg - explanation of logger
  * @param any - objet to add to msg
  */
-export const logError = (msg: string, any: any = '') => {
-  menash.send(configEnv.rabbit.logger, {
-    level: 'error',
-    message: `${msg}. ${any ? JSON.stringify(any) : ''}`,
-    system: 'NYC',
-    service: 'sf',
-    extraFields: any,
-  });
-
-  console.log(`Error ${msg} ${!any ? '' : JSON.stringify(any)}`);
-
-  logger.error(`${msg} ${!any ? '' : JSON.stringify(any)}`);
+export const logError = (service: string, msg: string, any: any = '') => {
+  log('error', service, msg, any);
 };

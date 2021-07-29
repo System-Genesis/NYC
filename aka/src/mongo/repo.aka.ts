@@ -33,8 +33,28 @@ const get = {
 
     return allData;
   },
-  oneByPn: async (personalNumber: string) => await akaSModel.find({ personalNumber }),
-  oneByIc: async (identityCard: string) => await akaSModel.find({ identityCard }),
+  oneByPn: async (personalNumber: string) => {
+    const person = await akaSModel.find({ personalNumber });
+    const telephone = await akaTModel.find({ personalNumber });
+    const meta = await akaIModel.find({ personalNumber });
+
+    person['picture'] = meta;
+    person['phone'] = telephone;
+
+    return person;
+  },
+  oneByIc: async (identityCard: string) => {
+    const person = await akaSModel.find({ identityCard });
+    if (person.personalNumber) {
+      const telephone = await akaTModel.find({ MISPAR_ISHI: person.personalNumber });
+      const meta = await akaIModel.find({ personalNumber: person.personalNumber });
+
+      person['picture'] = meta;
+      person['phone'] = telephone;
+    }
+
+    return person;
+  },
 };
 
 const update = {
@@ -52,7 +72,7 @@ const update = {
       await akaIModel.deleteMany({});
       await akaIModel.insertMany(data);
     },
-    gatByPn: async (personalNumber: string, updateObj) => {
+    byPn: async (personalNumber: string, updateObj) => {
       return await akaIModel.findOneAndUpdate({ personalNumber }, updateObj);
     },
     createOne: async (img: picture) => {
