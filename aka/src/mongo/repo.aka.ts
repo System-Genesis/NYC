@@ -26,7 +26,7 @@ const get = {
 
     const allData = sortedS.map((s) => {
       const pn = s[akaFieldNames.personalNumber];
-      s.phone = sortedT.find((t) => t.MISPAR_ISHI === pn);
+      s.phone = sortedT.filter((t) => t.MISPAR_ISHI === pn);
       s.picture = sortedI.find((t) => t.personalNumber === pn);
       return s;
     });
@@ -36,7 +36,7 @@ const get = {
   oneByPn: async (mi: string) => {
     const person: aka = await akaSModel.find({ personalNumber: mi }).lean();
     const meta: picture = await akaIModel.find({ personalNumber: mi }).lean();
-    const telephone: phone = await akaTModel.find({ personalNumber: mi }).lean();
+    const telephone: phone = await akaTModel.filter({ personalNumber: mi }).lean();
 
     person['picture'] = meta;
     person['phone'] = telephone;
@@ -46,7 +46,7 @@ const get = {
   oneByIc: async (identityCard: string) => {
     const person: aka = await akaSModel.find({ identityCard }).lean();
     if (person.mi) {
-      const telephone: phone = await akaTModel.find({ MISPAR_ISHI: person.mi }).lean();
+      const telephone: phone = await akaTModel.filter({ MISPAR_ISHI: person.mi }).lean();
       const meta: picture = await akaIModel.find({ personalNumber: person.mi }).lean();
 
       person.picture = meta;
