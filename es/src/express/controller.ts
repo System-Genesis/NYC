@@ -19,6 +19,6 @@ export const getByIdentityCard = async (req: Request, res: Response): Promise<vo
 };
 
 export const changeSchedule = async (req: Request, res: Response): Promise<void> => {
-    await schedule.changeRunTime(parseInt(req.params.hour), parseInt(req.params.minutes));
-    res.send("Schedule time changed");
-}
+    schedule.changeRunTime(parseInt(req.params.hour, 10), parseInt(req.params.minutes, 10));
+    res.send('Schedule time changed');
+};
