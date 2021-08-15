@@ -3,17 +3,15 @@ import config from '../config';
 import EsModel from '../mongo/EsModel';
 import fieldNames from '../config/fieldNames';
 
-const { paths } = config;
+const { express } = config;
 
-const tokenQuery = (token: string): string => `&token=${token}`;
-
-export const getAll = async () => await axios.get(`${paths.all}${tokenQuery(config.token)}`);
+export const getAll = async () => await axios.get(`${express.basicURL}`, { headers: { Authorization: express.esToken } });
 
 export const getByDomainUser = async (domainUser: string) =>
-    await axios.get(`${paths.domainUser}${domainUser}${tokenQuery(config.token)}`);
+    await axios.get(`${express.basicURL}?domainUser=${domainUser}`, { headers: { Authorization: express.esToken } });
 
 export const getByPersonalNumber = async (personalNumber: string) =>
-    await axios.get(`${paths.personalNumber}${personalNumber}${tokenQuery(config.token)}`);
+    await axios.get(`${express.basicURL}?personalNumber=${personalNumber}`, { headers: { Authorization: express.esToken } });
 
 export const getByIdentityCard = async (identityCard: string) => {
     const query = {};

@@ -35,8 +35,8 @@ const get = {
   },
   oneByPn: async (mi: string) => {
     const person: aka = await akaPersonModel.find({ personalNumber: mi }).lean();
-    const meta: picture = await akaImgModel.find({ personalNumber: mi }).lean();
-    const telephone: phone = await akaPhoneModel.find({ personalNumber: mi }).lean();
+    const meta: picture = await akaImgModel.findOne({ personalNumber: mi }).lean();
+    const telephone: phone[] = await akaPhoneModel.find({ personalNumber: mi }).lean();
 
     person.picture = meta;
     person.phone = telephone;
@@ -47,8 +47,8 @@ const get = {
     const person: aka = await akaPersonModel.find({ identityCard }).lean();
    
     if (person.mi) {
-      const telephone: phone = await akaPhoneModel.find({ MISPAR_ISHI: person.mi }).lean();
-      const meta: picture = await akaImgModel.find({ personalNumber: person.mi }).lean();
+      const telephone: phone[] = await akaPhoneModel.find({ MISPAR_ISHI: person.mi }).lean();
+      const meta: picture = await akaImgModel.findOne({ personalNumber: person.mi }).lean();
 
       person.picture = meta;
       person.phone = telephone;
@@ -57,7 +57,7 @@ const get = {
     return person;
   },
   imgByPn: async (personalNumber: string) => {
-    return (await akaImgModel.find({ personalNumber }).lean()) as picture;
+    return (await akaImgModel.findOne({ personalNumber }).lean()) as picture;
   },
 };
 

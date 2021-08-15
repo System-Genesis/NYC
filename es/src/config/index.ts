@@ -19,12 +19,11 @@ const config = {
         selectorQueue: env.get('PRODUCE_QUEUE').required().asString(),
         logQueue: env.get('LOG_QUEUE').required().asString(),
     },
-    paths: {
-        all: env.get('GET_ALL_URL').required().asUrlString(),
-        domainUser: env.get('GET_BY_DOMAIN_USER_URL').required().asUrlString(),
-        personalNumber: env.get('GET_BY_PERSONAL_NUMBER_URL').required().asUrlString(),
+    express: {
+        basicURL: env.get('BASIC_URL').required().asUrlString(),
+        token: env.get('TOKEN').required().asString(),
+        esToken: env.get('ES_TOKEN').required().asString(),
     },
-    token: env.get('TOKEN').required().asString(),
 };
 
 export default config;

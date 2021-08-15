@@ -10,7 +10,7 @@ type aka = {
   hr: string;
   birthday: string;
   sex: 'm' | 'f';
-  phone?: phone;
+  phone?: phone[];
   picture?: picture;
 };
 
