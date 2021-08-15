@@ -1,6 +1,6 @@
 import menash from 'menashmq';
-import config from '../main.config/main.config';
 import { logInfo } from '../log/logger';
+import config from '../main.config/main.config';
 
 const { uri, retryOptions, logger } = config.rabbit;
 

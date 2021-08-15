@@ -7,11 +7,13 @@ const { express } = config;
 
 export const getAll = async () => await axios.get(`${express.basicURL}`, { headers: { Authorization: express.esToken } });
 
-export const getByDomainUser = async (domainUser: string) =>
-    await axios.get(`${express.basicURL}?domainUser=${domainUser}`, { headers: { Authorization: express.esToken } });
+export const getByDomainUser = async (domainUser: string) => {
+    return await axios.get(`${express.basicURL}?domainUser=${domainUser}`, { headers: { Authorization: express.esToken } });
+};
 
-export const getByPersonalNumber = async (personalNumber: string) =>
-    await axios.get(`${express.basicURL}?personalNumber=${personalNumber}`, { headers: { Authorization: express.esToken } });
+export const getByPersonalNumber = async (personalNumber: string) => {
+    return await axios.get(`${express.basicURL}?personalNumber=${personalNumber}`, { headers: { Authorization: express.esToken } });
+};
 
 export const getByIdentityCard = async (identityCard: string) => {
     const query = {};

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import * as service from './service';
 import { schedule } from '../initializeSchedule';
+import fieldNames from '../config/fieldNames';
 
 export const getAll = async (_req: Request, res: Response): Promise<void> => {
     res.send(await service.getAll());
@@ -20,5 +21,5 @@ export const getByIdentityCard = async (req: Request, res: Response): Promise<vo
 
 export const changeSchedule = async (req: Request, res: Response): Promise<void> => {
     schedule.changeRunTime(parseInt(req.params.hour, 10), parseInt(req.params.minutes, 10));
-    res.send('Schedule time changed');
+    res.send(`Schedule time for ${fieldNames.sources.es} changed to: ${req.params.hour}:${req.params.minutes}`);
 };
