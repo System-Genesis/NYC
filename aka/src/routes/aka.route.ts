@@ -23,13 +23,11 @@ router.post('/files', async (req: Request, res: Response) => {
     try {
       const data = await getAkaData(fileName);
 
-      await saveToDB(fileName.startWith('c') ? 's' : 'i', data);
+      await saveToDB(fileName.startWith('c') ? 'person' : 'phone', data);
     } catch (error) {
       logError('aka', 'Error handle AKA Data', { error, fileName });
     }
   }
-
-  return;
 });
 
 router.use(isAuth);

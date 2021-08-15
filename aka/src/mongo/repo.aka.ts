@@ -3,51 +3,52 @@ import * as mongoose from 'mongoose';
 import envConfig from '../config/env.config';
 import fieldNames from '../config/fieldNames';
 import aka, { phone, picture } from '../types/aka.type';
-import akaISchema from './model.i';
-import akaSSchema from './model.s';
-import akaTSchema from './model.t';
+import akaImgSchema from './model.img';
+import akaPersonSchema from './model.person';
+import akaPhoneSchema from './model.phone';
 
 const { mongo } = envConfig;
 const akaFieldNames = fieldNames.aka;
 
-const akaSModel = mongoose.model(mongo.collectionName, akaSSchema);
-const akaIModel = mongoose.model(mongo.collectionName, akaISchema);
-const akaTModel = mongoose.model(mongo.collectionName, akaTSchema);
+const akaPersonModel = mongoose.model(mongo.collectionName, akaPersonSchema);
+const akaImgModel = mongoose.model(mongo.collectionName, akaImgSchema);
+const akaPhoneModel = mongoose.model(mongo.collectionName, akaPhoneSchema);
 
 const get = {
   all: async (query = {}) => {
-    const resS: aka[] = (await akaSModel.find(query).lean()) as aka[];
-    const resI: picture[] = (await akaIModel.find(query).lean()) as picture[];
-    const resT: phone[] = (await akaTModel.find(query).lean()) as phone[];
+    const resPerson: aka[] = (await akaPersonModel.find(query).lean()) as aka[];
+    const resImg: picture[] = (await akaImgModel.find(query).lean()) as picture[];
+    const resPhone: phone[] = (await akaPhoneModel.find(query).lean()) as phone[];
 
-    const sortedS = resS.sort((c, n) => (c.mi > n.mi ? -1 : 1));
-    const sortedI = resI.sort((c, n) => (c.personalNumber > n.personalNumber ? -1 : 1));
-    const sortedT = resT.sort((c: phone, n: phone) => (c.MISPAR_ISHI! > n.MISPAR_ISHI! ? -1 : 1));
+    const sortedPerson = resPerson.sort((c, n) => (c.mi > n.mi ? -1 : 1));
+    const sortedImg = resImg.sort((c, n) => (c.personalNumber > n.personalNumber ? -1 : 1));
+    const sortedPhone = resPhone.sort((c: phone, n: phone) => (c.MISPAR_ISHI! > n.MISPAR_ISHI! ? -1 : 1));
 
-    const allData = sortedS.map((s) => {
+    const allData = sortedPerson.map((s) => {
       const pn = s[akaFieldNames.personalNumber];
-      s.phone = sortedT.find((t) => t.MISPAR_ISHI === pn);
-      s.picture = sortedI.find((t) => t.personalNumber === pn);
+      s.phone = sortedPhone.find((t) => t.MISPAR_ISHI === pn);
+      s.picture = sortedImg.find((t) => t.personalNumber === pn);
       return s;
     });
 
     return allData;
   },
   oneByPn: async (mi: string) => {
-    const person: aka = await akaSModel.find({ personalNumber: mi }).lean();
-    const meta: picture = await akaIModel.find({ personalNumber: mi }).lean();
-    const telephone: phone = await akaTModel.find({ personalNumber: mi }).lean();
+    const person: aka = await akaPersonModel.find({ personalNumber: mi }).lean();
+    const meta: picture = await akaImgModel.find({ personalNumber: mi }).lean();
+    const telephone: phone = await akaPhoneModel.find({ personalNumber: mi }).lean();
 
-    person['picture'] = meta;
-    person['phone'] = telephone;
+    person.picture = meta;
+    person.phone = telephone;
 
     return person;
   },
   oneByIc: async (identityCard: string) => {
-    const person: aka = await akaSModel.find({ identityCard }).lean();
+    const person: aka = await akaPersonModel.find({ identityCard }).lean();
+   
     if (person.mi) {
-      const telephone: phone = await akaTModel.find({ MISPAR_ISHI: person.mi }).lean();
-      const meta: picture = await akaIModel.find({ personalNumber: person.mi }).lean();
+      const telephone: phone = await akaPhoneModel.find({ MISPAR_ISHI: person.mi }).lean();
+      const meta: picture = await akaImgModel.find({ personalNumber: person.mi }).lean();
 
       person.picture = meta;
       person.phone = telephone;
@@ -56,30 +57,30 @@ const get = {
     return person;
   },
   imgByPn: async (personalNumber: string) => {
-    return (await akaIModel.find({ personalNumber }).lean()) as picture;
+    return (await akaImgModel.find({ personalNumber }).lean()) as picture;
   },
 };
 
 const update = {
-  s: async (data: aka[]) => {
-    await akaSModel.deleteMany({});
-    await akaSModel.insertMany(data);
+  person: async (data: aka[]) => {
+    await akaPersonModel.deleteMany({});
+    await akaPersonModel.insertMany(data);
   },
-  t: async (data: aka[]) => {
-    await akaTModel.deleteMany({});
-    await akaTModel.insertMany(data);
+  phone: async (data: aka[]) => {
+    await akaPhoneModel.deleteMany({});
+    await akaPhoneModel.insertMany(data);
   },
 
-  i: {
+  image: {
     all: async (data: aka[]) => {
-      await akaIModel.deleteMany({});
-      await akaIModel.insertMany(data);
+      await akaImgModel.deleteMany({});
+      await akaImgModel.insertMany(data);
     },
     byPn: async (personalNumber: string, updateObj) => {
-      return await akaIModel.findOneAndUpdate({ personalNumber }, updateObj);
+      return await akaImgModel.findOneAndUpdate({ personalNumber }, updateObj);
     },
     createOne: async (img: picture) => {
-      return await akaIModel.create(img);
+      return await akaImgModel.create(img);
     },
   },
 };

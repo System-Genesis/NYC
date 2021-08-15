@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 
-const akaISchema = new mongoose.Schema(
+const akaImgSchema = new mongoose.Schema(
   {
     personalNumber: { type: String, unique: true },
     path: String,
@@ -10,4 +10,4 @@ const akaISchema = new mongoose.Schema(
   { timestamps: true, versionKey: false }
 );
 
-export default akaISchema;
+export default akaImgSchema;

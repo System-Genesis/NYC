@@ -83,13 +83,12 @@ export const imgHandler = async (fileName: string) => {
 
     const dateTaken = new Date(img.T_TZILUM);
     const pn = img.MISPAR_ISHI;
-
     const tmunaBuffer: Buffer = Buffer.from(img.TMUNA.data);
-
-    const imgFromDb: picture = await repoAka.get.imgByPn(pn);
     const takenImgDate = dateTaken.toISOString().split('T')[0];
     const imgName = config.minio.bucketName + '_' + pn + '_' + takenImgDate;
 
+    const imgFromDb: picture = await repoAka.get.imgByPn(pn);
+    
     if (imgFromDb) {
       try {
         const inconsistentPath = !imgFromDb.path.includes(imgFromDb.personalNumber);
@@ -99,7 +98,7 @@ export const imgHandler = async (fileName: string) => {
           inconsistentPath
         ) {
           const newPath = await uploadJpgFromBuffer(imgName, tmunaBuffer);
-          await repoAka.update.i.byPn(pn, {
+          await repoAka.update.image.byPn(pn, {
             takenAt: dateTaken,
             path: newPath,
           });
@@ -117,7 +116,7 @@ export const imgHandler = async (fileName: string) => {
         takenAt: dateTaken,
       };
 
-      await repoAka.update.i.createOne(takenImgMeta);
+      await repoAka.update.image.createOne(takenImgMeta);
     }
   }
 };

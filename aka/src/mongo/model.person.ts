@@ -3,7 +3,7 @@ import fieldNames from '../config/fieldNames';
 
 const akaFieldNames = fieldNames.aka;
 
-const akaSSchema = new mongoose.Schema(
+const akaPersonSchema = new mongoose.Schema(
   {
     _id: {
       type: mongoose.Schema.Types.ObjectId,
@@ -27,4 +27,4 @@ const akaSSchema = new mongoose.Schema(
   { versionKey: false }
 );
 
-export default akaSSchema;
+export default akaPersonSchema;

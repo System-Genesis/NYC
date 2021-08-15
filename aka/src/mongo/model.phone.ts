@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 
-const akaTSchema = new mongoose.Schema(
+const akaPhoneSchema = new mongoose.Schema(
   {
     MISPAR_ISHI: { type: String, unique: true },
     MISPAR_MOFE: String,
@@ -14,4 +14,4 @@ const akaTSchema = new mongoose.Schema(
   { versionKey: false }
 );
 
-export default akaTSchema;
+export default akaPhoneSchema;
