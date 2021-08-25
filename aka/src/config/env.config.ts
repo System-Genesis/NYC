@@ -1,6 +1,6 @@
 import './dotenv';
 
-import env from 'env-var';
+import * as env from 'env-var';
 
 export default {
   // audAka: 'lsluqvF8YMp0ffDPWhDyoYG8xqU9J8',
@@ -42,5 +42,11 @@ export default {
     accessKey: env.get('MINIO_ACCESS_KEY').required().asString(),
     secretKey: env.get('MINIO_SECRET_KEY').required().asString(),
     bucketName: env.get('MINIO_BUCKET_NAME').required().asString(),
+  },
+  s3: {
+    bucketName: env.get('AWS_BUCKET_NAME').required().asString(),
+    region: env.get('AWS_BUCKET_REGION').required().asString(),
+    accessKeyId: env.get('AWS_ACCESS_KEY').required().asString(),
+    secretAccessKey: env.get('AWS_SECRET_KEY').required().asString(),
   },
 };

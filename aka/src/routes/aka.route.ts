@@ -4,7 +4,7 @@ import akaService from '../service/aka.service';
 import { isAuth } from './../auth/auth';
 import config from '../config/env.config';
 import { getAkaData, imgHandler, saveToDB } from '../DataAccess/getAkaData';
-import { logError } from '../../../log/logger';
+import { logError } from '../../../Shared/log/logger';
 
 export const router = express.Router();
 

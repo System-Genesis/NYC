@@ -1,13 +1,14 @@
-import { logError } from '../../../log/logger';
-import fs from 'fs';
+import { logError } from '../../../Shared/log/logger';
+import * as fs from 'fs';
 import axios from 'axios';
-import path from 'path';
+import * as path from 'path';
 import getToken from '../auth/spike';
 import * as XLSX from 'xlsx';
 import repoAka from '../mongo/repo.aka';
 import config from '../config/env.config';
-import { bucketInstance, uploadJpgFromBuffer } from '../minio/minio.repo';
+import { bucketInstance } from '../minio/minio.repo';
 import { picture } from '../types/aka.type';
+import { uploadFile } from '../s3/s3_connection';
 
 const filePath = path.join(__dirname, '../../data/AKAExcel/');
 const akaUrl = config.akaUrl;
@@ -88,7 +89,7 @@ export const imgHandler = async (fileName: string) => {
     const imgName = config.minio.bucketName + '_' + pn + '_' + takenImgDate;
 
     const imgFromDb: picture = await repoAka.get.imgByPn(pn);
-    
+
     if (imgFromDb) {
       try {
         const inconsistentPath = !imgFromDb.path.includes(imgFromDb.personalNumber);
@@ -97,7 +98,7 @@ export const imgHandler = async (fileName: string) => {
           dateTaken.getTime() - new Date(imgFromDb.takenAt).getTime() > 0 ||
           inconsistentPath
         ) {
-          const newPath = await uploadJpgFromBuffer(imgName, tmunaBuffer);
+          const newPath = await uploadFile(imgName, tmunaBuffer);
           await repoAka.update.image.byPn(pn, {
             takenAt: dateTaken,
             path: newPath,
@@ -107,11 +108,11 @@ export const imgHandler = async (fileName: string) => {
         logError('aka', 'ERROR Update Image', { pn, path });
       }
     } else {
-      const newPath = await uploadJpgFromBuffer(imgName, tmunaBuffer);
+      const s3res = await uploadFile(imgName, tmunaBuffer);
 
       const takenImgMeta: picture = {
         personalNumber: pn,
-        path: newPath,
+        path: s3res.Location,
         format: 'jpg',
         takenAt: dateTaken,
       };
